@@ -1,0 +1,68 @@
+
+const countries = [
+  {
+    id: "usa",
+    name: "United States",
+    flag: "🇺🇸",
+    categories: ["Tourist", "Student", "Work"],
+    purpose: "Explore opportunities in the United States.",
+    processing: "15–30 working days",
+    fee: 999,
+  },
+  {
+    id: "uk",
+    name: "United Kingdom",
+    flag: "🇬🇧",
+    categories: ["Tourist", "Student", "Work"],
+    purpose: "Study, work or explore the United Kingdom.",
+    processing: "15–25 working days",
+    fee: 899,
+  },
+  {
+    id: "canada",
+    name: "Canada",
+    flag: "🇨🇦",
+    categories: ["Tourist", "Student", "Work"],
+    purpose: "Discover education and career opportunities in Canada.",
+    processing: "20–40 working days",
+    fee: 1099,
+  },
+  {
+    id: "australia",
+    name: "Australia",
+    flag: "🇦🇺",
+    categories: ["Tourist", "Student", "Work"],
+    purpose: "Plan your journey to Australia.",
+    processing: "20–35 working days",
+    fee: 1199,
+  },
+  {
+    id: "germany",
+    name: "Germany",
+    flag: "🇩🇪",
+    categories: ["Tourist", "Student", "Work", "Business"],
+    purpose: "Explore opportunities in Germany.",
+    processing: "15–30 working days",
+    fee: 999,
+  },
+  {
+    id: "france",
+    name: "France",
+    flag: "🇫🇷",
+    categories: ["Tourist", "Student", "Work"],
+    purpose: "Experience education and travel in France.",
+    processing: "15–25 working days",
+    fee: 999,
+  },
+  {
+    id: "uae",
+    name: "United Arab Emirates",
+    flag: "🇦🇪",
+    categories: ["Tourist", "Work", "Business"],
+    purpose: "Explore travel and business opportunities in the UAE.",
+    processing: "3–10 working days",
+    fee: 699,
+  },
+];
+
+export default countries;
