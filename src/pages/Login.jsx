@@ -142,9 +142,7 @@ function Login() {
           <p>Password: the password chosen during signup</p>
           <p>Admin account must be signed up in this browser first.</p>
 
-          <strong>Demo user (no Dashboard access)</strong>
-          <p>Username: emilys</p>
-          <p>Password: emilyspass</p>
+          
         </div>
 
         <p className="auth-footer-text">
