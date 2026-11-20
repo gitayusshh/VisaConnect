@@ -79,12 +79,13 @@ The optimized production files are generated in the `dist` directory.
 
 ## Demo Authentication and Roles
 
-The project uses browser-stored accounts and DummyJSON for demonstration purposes.
 
-**Sample user account**
+The application includes user and admin authentication for demonstration purposes.
 
-- Username: `emilys`
-- Password: `emilyspass`
+**Admin Login Credentials**
+
+- Username: `ayush1234 `
+- Password: `ayush@7268`
 
 **Admin account**
 
