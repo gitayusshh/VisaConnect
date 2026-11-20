@@ -5,7 +5,17 @@ import { Clock, ArrowRight } from "lucide-react";
 function CountryCard({ country }) {
   return (
     <div className="country-card">
-      <div className="country-flag">{country.flag}</div>
+      {/* <div className="country-flag">{country.flag}</div> */}
+
+      <div className="country-flag">
+  <img
+    src={`https://flagcdn.com/w80/${country.id === "uk" ? "gb" : country.id === "usa" ? "us" : country.id === "uae" ? "ae" : country.id === "australia" ? "au" : country.id === "germany" ? "de" : country.id === "france" ? "fr" : "ca"}.png`}
+    alt={`${country.name} flag`}
+    width="64"
+    height="42"
+    style={{ objectFit: "contain" }}
+  />
+</div>
 
       <h3>{country.name}</h3>
       <p>{country.purpose}</p>

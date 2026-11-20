@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { UserPlus, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
-import { registerUser } from "../services/api";
+import { ADMIN_USERNAME, registerUser } from "../services/api";
 
 function Signup() {
   const [form, setForm] = useState({
@@ -100,22 +100,19 @@ function Signup() {
         <div className="auth-card auth-success">
           <CheckCircle size={55} color="#16a34a" />
 
-          <h2>Demo Registration Successful!</h2>
+          <h2>Account Created!</h2>
 
           <p>
-            Your registration request was accepted by the
-            DummyJSON mock API.
+            Your account has been saved in this browser.
           </p>
 
           <p>
-            This is not a permanent account. To access your
-            Dashboard, use the demo login credentials below.
+            Log in with your signup details to continue. Only the
+            admin account ({ADMIN_USERNAME}) can access the Dashboard.
           </p>
 
-          <div className="demo-credentials">
-            <strong>Demo Login Credentials</strong>
-            <p>Username: emilys</p>
-            <p>Password: emilyspass</p>
+          <div className="details-note">
+            Your account is available only in this browser on this device.
           </div>
 
           <Link to="/login" className="primary-btn">
@@ -251,9 +248,9 @@ function Signup() {
         </p>
 
         <p className="details-note">
-          This registration uses a mock API.
-          New accounts are not permanently stored and cannot
-          be used to sign in.
+          Demo accounts are stored in this browser and can be
+          used to sign in on this device. Use username {ADMIN_USERNAME}
+          for admin access.
         </p>
       </div>
     </div>

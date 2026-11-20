@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogIn, Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
-import { loginUser } from "../services/api";
+import { ADMIN_USERNAME, loginUser } from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ function Login() {
         `Welcome back, ${data.firstName || "User"}! Login successful.`
       );
 
-      navigate("/dashboard");
+      navigate(data.role === "admin" ? "/dashboard" : "/");
 
       // Refresh so the navbar displays the logged-in user.
       // The global toast container remains available after navigation.
@@ -136,8 +136,13 @@ function Login() {
         </form>
 
         <div className="demo-credentials">
-          <strong>Demo Login Credentials</strong>
+          <strong>Admin account</strong>
 
+          <p>Username: {ADMIN_USERNAME}</p>
+          <p>Password: the password chosen during signup</p>
+          <p>Admin account must be signed up in this browser first.</p>
+
+          <strong>Demo user (no Dashboard access)</strong>
           <p>Username: emilys</p>
           <p>Password: emilyspass</p>
         </div>

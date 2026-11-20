@@ -16,6 +16,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import Users from "./pages/Users";
+import AdminApplications from "./pages/AdminApplications";
 
 function App() {
   return (
@@ -54,9 +55,18 @@ function App() {
           <Route path="/users" element={<Users />} />
 
           <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminApplications />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <ProtectedRoute adminOnly>
                 <Dashboard />
               </ProtectedRoute>
             }

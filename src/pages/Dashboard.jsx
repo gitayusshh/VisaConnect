@@ -11,13 +11,24 @@ import {
   Search,
   CalendarPlus,
   List,
+  ClipboardCheck,
 } from "lucide-react";
 import countries from "../data/countries";
+import { getBookings } from "../services/consultations";
 
 function getStoredArray(key) {
   try {
+    if (key === "bookings") {
+      return getBookings();
+    }
+
     const data = JSON.parse(localStorage.getItem(key) || "[]");
-    return Array.isArray(data) ? data : [];
+
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    return data;
   } catch {
     return [];
   }
@@ -64,7 +75,9 @@ function Dashboard() {
 
   const upcomingConsultations = myBookings
     .filter((booking) => {
-      if (booking.status === "Cancelled") return false;
+      if (["Declined", "Cancelled"].includes(booking.status)) {
+        return false;
+      }
 
       const date = new Date(
         `${booking.date}T${booking.time}:00`
@@ -229,6 +242,18 @@ function Dashboard() {
               View All <ArrowRight size={16} />
             </span>
           </button>
+
+          <Link
+            to="/admin"
+            className="dashboard-action-card"
+          >
+            <ClipboardCheck size={27} color="#2563eb" />
+            <h3>Review Requests</h3>
+            <p>Review applications and consultation requests.</p>
+            <span>
+              Open Review Page <ArrowRight size={16} />
+            </span>
+          </Link>
         </div>
       </div>
 

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Plane, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
+import { isAdminUser } from "../services/api";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ function Navbar() {
   const user = JSON.parse(localStorage.getItem("user") || "null");
   const token = localStorage.getItem("token");
   const isLoggedIn = Boolean(user && token);
+  const isAdmin = isAdminUser(user);
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -50,14 +52,16 @@ function Navbar() {
         <div className={`nav-actions ${menuOpen ? "actions-open" : ""}`}>
           {isLoggedIn ? (
             <>
-              <Link
-                to="/dashboard"
-                className="login-btn"
-                onClick={closeMenu}
-              >
-                <LayoutDashboard size={17} />
-                Dashboard
-              </Link>
+              {isAdmin && (
+                <Link
+                  to="/dashboard"
+                  className="login-btn"
+                  onClick={closeMenu}
+                >
+                  <LayoutDashboard size={17} />
+                  Dashboard
+                </Link>
+              )}
 
               <button className="logout-btn" onClick={handleLogout}>
                 <LogOut size={17} />

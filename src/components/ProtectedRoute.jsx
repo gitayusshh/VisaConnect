@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { validateSession } from "../services/api";
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute({ children, adminOnly = false }) {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -16,6 +17,7 @@ function ProtectedRoute({ children }) {
       if (!token) {
         if (active) {
           setAuthenticated(false);
+          setIsAdmin(false);
           setLoading(false);
         }
         return;
@@ -27,12 +29,14 @@ function ProtectedRoute({ children }) {
         if (active) {
           localStorage.setItem("user", JSON.stringify(user));
           setAuthenticated(true);
+          setIsAdmin(user.role === "admin");
         }
       } catch {
         if (active) {
           localStorage.removeItem("token");
           localStorage.removeItem("user");
           setAuthenticated(false);
+          setIsAdmin(false);
         }
       } finally {
         if (active) {
@@ -58,6 +62,10 @@ function ProtectedRoute({ children }) {
 
   if (!authenticated) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (adminOnly && !isAdmin) {
+    return <Navigate to="/" replace />;
   }
 
   return children;

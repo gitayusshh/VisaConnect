@@ -1,8 +1,11 @@
 
-import { useState } from "react";
-import { CalendarDays, CheckCircle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { CalendarDays } from "lucide-react";
 import { toast } from "react-toastify";
 import countries from "../data/countries";
+import { getBookings } from "../services/consultations";
+import { isAdminUser } from "../services/api";
 
 const timeSlots = [
   "09:00",
@@ -36,8 +39,20 @@ const initialForm = {
   mode: "Online",
 };
 
+function getCurrentUser() {
+  try {
+    return JSON.parse(localStorage.getItem("user") || "null");
+  } catch {
+    return null;
+  }
+}
+
 function Consultation() {
   const [form, setForm] = useState(initialForm);
+  const [bookings, setBookings] = useState([]);
+  const user = getCurrentUser();
+  const userId = user?.id ?? null;
+  const isAdmin = isAdminUser(user);
   const [error, setError] = useState("");
   const [confirmation, setConfirmation] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -59,6 +74,26 @@ function Consultation() {
     setError(message);
     toast.error(message);
   };
+
+  useEffect(() => {
+    try {
+      setBookings(getBookings());
+    } catch (loadError) {
+      setError(loadError.message || "Unable to load consultation requests.");
+    }
+  }, []);
+
+  const myBookings = bookings
+    .filter((booking) =>
+      userId == null
+        ? booking.userId == null
+        : String(booking.userId) === String(userId)
+    )
+    .sort(
+      (first, second) =>
+        new Date(`${first.date}T${first.time}:00`) -
+        new Date(`${second.date}T${second.time}:00`)
+    );
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -115,19 +150,14 @@ function Consultation() {
     setSubmitting(true);
 
     try {
-      const bookings = JSON.parse(
-        localStorage.getItem("bookings") || "[]"
-      );
-
-      if (!Array.isArray(bookings)) {
-        throw new Error("Invalid booking data.");
-      }
+      const bookings = getBookings();
 
       const slotTaken = bookings.some(
         (booking) =>
           booking.date === form.date &&
           booking.time === form.time &&
-          booking.mode === form.mode
+          booking.mode === form.mode &&
+          !["Declined", "Cancelled"].includes(booking.status)
       );
 
       if (slotTaken) {
@@ -143,21 +173,20 @@ function Consultation() {
 
       const booking = {
         ...form,
-        id: `BK-${Date.now()}`,
+        id: `${Date.now()}`,
         userId: user?.id ?? null,
-        status: "Confirmed",
+        status: "Pending",
         createdAt: new Date().toISOString(),
       };
 
-      localStorage.setItem(
-        "bookings",
-        JSON.stringify([...bookings, booking])
-      );
+      const updatedBookings = [...bookings, booking];
+      localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+      setBookings(updatedBookings);
 
       setConfirmation(booking);
 
       toast.success(
-        `Consultation booked successfully! ID: ${booking.id}`
+        `Consultation request submitted! ID: ${booking.id}`
       );
     } catch {
       showError("Unable to save your booking. Please try again.");
@@ -166,16 +195,27 @@ function Consultation() {
     }
   };
 
+  const viewMyConsultations = () => {
+    setConfirmation(null);
+
+    requestAnimationFrame(() => {
+      document
+        .getElementById("my-consultations")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
   if (confirmation) {
     return (
       <div className="container section">
         <div className="booking-success">
-          <CheckCircle size={58} color="#16a34a" />
+          <CalendarDays size={58} color="#2563eb" />
 
-          <h2>Consultation Booked!</h2>
+          <h2>Request Submitted!</h2>
 
           <p>
-            Your demo consultation has been confirmed.
+            Your preferred time is pending confirmation. Check your
+            consultation list or dashboard for status updates.
           </p>
 
           <div className="booking-receipt">
@@ -216,17 +256,37 @@ function Consultation() {
             </p>
           </div>
 
-          <button
-            type="button"
-            className="primary-btn"
-            onClick={() => {
-              setConfirmation(null);
-              setForm({ ...initialForm });
-              setError("");
-            }}
-          >
-            Book Another Consultation
-          </button>
+          <div className="consultation-actions">
+            <button
+              type="button"
+              className="outline-btn"
+              onClick={viewMyConsultations}
+            >
+              View My Consultations
+            </button>
+
+            <Link to="/dashboard" className="outline-btn">
+              View Dashboard
+            </Link>
+
+            {isAdmin && (
+              <Link to="/admin" className="outline-btn">
+                Review / Approve Requests
+              </Link>
+            )}
+
+            <button
+              type="button"
+              className="primary-btn"
+              onClick={() => {
+                setConfirmation(null);
+                setForm({ ...initialForm });
+                setError("");
+              }}
+            >
+              Book Another Consultation
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -405,9 +465,9 @@ function Consultation() {
           </div>
 
           <p className="details-note">
-            This is a simulated booking. No real appointment
-            is scheduled. Times are interpreted in your
-            browser's local timezone.
+            This is a demo request, not a confirmed appointment.
+            An administrator must confirm it first. Times are
+            interpreted in your browser's local timezone.
           </p>
 
           <div className="consultation-actions">
@@ -419,11 +479,54 @@ function Consultation() {
               <CalendarDays size={18} />
 
               {submitting
-                ? "Booking..."
-                : "Confirm Booking"}
+                ? "Submitting..."
+                : "Request Consultation"}
             </button>
           </div>
         </form>
+      </div>
+
+      <div className="dashboard-section" id="my-consultations">
+        <div className="dashboard-section-heading">
+          <h2>Your Consultations</h2>
+          {isAdmin && (
+            <Link to="/admin" className="outline-btn">
+              Review / Approve Requests
+            </Link>
+          )}
+        </div>
+
+        {myBookings.length === 0 ? (
+          <div className="empty-state">
+            <CalendarDays size={34} color="#64748b" />
+            <h3>No Consultation Requests Yet</h3>
+            <p>Your submitted requests and their statuses will appear here.</p>
+          </div>
+        ) : (
+          <div className="dashboard-list">
+            {myBookings.map((booking) => (
+              <div className="dashboard-list-item" key={booking.id}>
+                <div>
+                  <h3>
+                    {countries.find(
+                      (country) => country.id === booking.country
+                    )?.name || booking.country}{" "}
+                    Consultation
+                  </h3>
+                  <p>
+                    {booking.visaType} Visa — {booking.mode}
+                  </p>
+                  <p>{booking.date} at {booking.time}</p>
+                  <small>
+                    {booking.id} · {booking.latestUpdate || "Request received."}
+                  </small>
+                </div>
+
+                <span className="status-label">{booking.status}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -148,14 +148,16 @@ function TrackApplication() {
   );
 
   const [application, setApplication] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
   const [error, setError] = useState("");
 
-  const findApplication = (id) => {
-    const searchId = id.trim().toLowerCase();
+  const findApplication = (query) => {
+    const searchText = query.trim().toLowerCase();
 
-    if (!searchId) {
+    if (!searchText) {
       setApplication(null);
-      setError("Please enter an application reference ID.");
+      setSearchResults([]);
+      setError("Please enter an application ID, name, country, or visa type.");
       return;
     }
 
@@ -164,18 +166,53 @@ function TrackApplication() {
       ...demoApplications,
     ];
 
-    const found = allApplications.find(
-      (item) =>
-        String(item.id).toLowerCase() === searchId
-    );
+    const matches = allApplications.filter((item) => {
+      const countryName =
+        countries.find((countryItem) => countryItem.id === item.country)
+          ?.name || item.country;
+      const searchableFields = [
+        item.id,
+        item.fullName,
+        item.country,
+        countryName,
+        item.visaType,
+      ];
 
-    if (found) {
-      setApplication(found);
+      return searchableFields.some((field) =>
+        String(field || "").toLowerCase().includes(searchText)
+      );
+    });
+
+    if (matches.length === 1) {
+      setApplication(matches[0]);
+      setSearchResults([]);
+      setError("");
+    } else if (matches.length > 1) {
+      setApplication(null);
+      setSearchResults(matches);
       setError("");
     } else {
       setApplication(null);
-      setError("No application found with this reference ID.");
+      setSearchResults([]);
+      setError("No application found matching your search.");
     }
+  };
+
+  const selectSearchResult = (result) => {
+    setApplicationId(result.id);
+    setApplication(result);
+    setSearchResults([]);
+    setError("");
+  };
+
+  const formatDate = (date) => {
+    if (!date) return "Not available";
+
+    const parsed = new Date(date);
+
+    return Number.isNaN(parsed.getTime())
+      ? "Not available"
+      : parsed.toLocaleDateString();
   };
 
   useEffect(() => {
@@ -197,23 +234,13 @@ function TrackApplication() {
 
   const isRejected = application?.status === "Rejected";
 
-  const formatDate = (date) => {
-    if (!date) return "Not available";
-
-    const parsed = new Date(date);
-
-    return Number.isNaN(parsed.getTime())
-      ? "Not available"
-      : parsed.toLocaleDateString();
-  };
-
   return (
     <div className="container section">
       <div className="section-heading">
         <span>APPLICATION TRACKING</span>
         <h2>Track Your Visa Application</h2>
         <p>
-          Enter your application reference ID to check its progress.
+          Search by application ID, applicant name, country, or visa type.
         </p>
       </div>
 
@@ -227,19 +254,20 @@ function TrackApplication() {
         >
           <input
             type="text"
-            placeholder="Enter Application ID (VC-...)"
-            aria-label="Application reference ID"
+            placeholder="Search ID, name, country, or visa type"
+            aria-label="Search applications"
             value={applicationId}
             onChange={(e) => {
               setApplicationId(e.target.value);
               setError("");
               setApplication(null);
+              setSearchResults([]);
             }}
           />
 
           <button type="submit" className="primary-btn">
             <Search size={18} />
-            Track Application
+            Search Applications
           </button>
         </form>
 
@@ -247,6 +275,34 @@ function TrackApplication() {
           <div className="form-error" role="alert">
             <AlertCircle size={18} />
             {error}
+          </div>
+        )}
+
+        {searchResults.length > 0 && (
+          <div className="tracking-demo-section">
+            <h3>Select an Application</h3>
+            <div className="tracking-demo-grid">
+              {searchResults.map((result) => (
+                <button
+                  key={result.id}
+                  type="button"
+                  className="tracking-demo-card"
+                  onClick={() => selectSearchResult(result)}
+                >
+                  <strong>{result.id}</strong>
+                  <span>{result.fullName}</span>
+                  <small>
+                    {countries.find(
+                      (countryItem) => countryItem.id === result.country
+                    )?.name || result.country}{" "}
+                    · {result.visaType}
+                  </small>
+                  <span className="tracking-demo-action">
+                    View Status <ArrowRight size={15} />
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         )}
 

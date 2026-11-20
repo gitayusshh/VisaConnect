@@ -12,9 +12,9 @@ VisaConnect is a modern, responsive visa application and consultation portal bui
 - **Country Explorer:** Browse visa destinations, search and filter countries, and view visa-related information.
 - **Visa Application:** Multi-step application form with input validation, progress tracking, review, and confirmation.
 - **Application Tracking:** Track applications using a unique application ID and view their current status.
-- **Consultation Booking:** Select consultation preferences, available mock time slots, and receive a booking confirmation.
-- **User Authentication:** Login interface integrated with DummyJSON API and a simulated signup experience.
-- **User Dashboard:** View application statistics, recent applications, consultations, and quick actions.
+- **Consultation Booking:** Submit a pending request, view your consultation statuses, and let an admin confirm or decline requests.
+- **User Authentication:** Demo login with DummyJSON and browser-stored signup accounts.
+- **Admin Dashboard:** The `ayush1234` account can review applications and consultation requests.
 - **Contact Page:** Contact form and consultancy information.
 - **Responsive UI:** Optimized for desktop, tablet, and mobile devices.
 
@@ -77,16 +77,21 @@ npm run build
 
 The optimized production files are generated in the `dist` directory.
 
-## Demo Authentication
+## Demo Authentication and Roles
 
-The project uses DummyJSON for demonstration purposes.
+The project uses browser-stored accounts and DummyJSON for demonstration purposes.
 
-**Demo Login Credentials**
+**Sample user account**
 
 - Username: `emilys`
 - Password: `emilyspass`
 
-Authentication is for demonstration only and is not intended for production use.
+**Admin account**
+
+- Username: `ayush1234`
+- Use the password set when signing up with this username.
+
+Only the admin account can access `/dashboard` and `/admin`. Role checks are client-side demonstrations, not production security.
 
 ## Application Workflow
 
@@ -96,7 +101,7 @@ Authentication is for demonstration only and is not intended for production use.
 4. Submit the application to generate a unique tracking ID.
 5. Track the application using its ID.
 6. Book a consultation using the available mock slots.
-7. View application and consultation information in the dashboard.
+7. Admin `ayush1234` reviews requests from the dashboard; other users can track applications and see their consultation statuses.
 
 ## Application Tracking Demo
 
@@ -126,7 +131,8 @@ The application follows a component-based React architecture:
 - Uploaded documents are not transmitted to a server.
 - Application statuses are demonstrations, not updates from real visa authorities.
 - Consultation availability is based on mock time slots.
-- Authentication uses a third-party demonstration API.
+- Signup accounts and application roles are stored or checked in the browser.
+- Client-side role checks can be bypassed and are not suitable for real admin authorization.
 - No real visa processing, payment, or backend database is included.
 
 ## AI Assistance Disclosure
