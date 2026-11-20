@@ -79,12 +79,12 @@ The optimized production files are generated in the `dist` directory.
 
 ## Demo Authentication
 
-The project uses DummyJSON for demonstration purposes.
 
-**Demo Login Credentials**
 
-- Username: `emilys`
-- Password: `emilyspass`
+**Admin Login Credentials**
+
+- Username: `ayush1234 `
+- Password: `ayush@7268`
 
 Authentication is for demonstration only and is not intended for production use.
 
