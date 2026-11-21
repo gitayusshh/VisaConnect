@@ -102,18 +102,7 @@ function Signup() {
 
           <h2>Account Created!</h2>
 
-          <p>
-            Your account has been saved in this browser.
-          </p>
-
-          <p>
-            Log in with your signup details to access your Dashboard.
-            Admin review tools are reserved for {ADMIN_USERNAME}.
-          </p>
-
-          <div className="details-note">
-            Your account is available only in this browser on this device.
-          </div>
+         
 
           <Link to="/login" className="primary-btn">
             Go to Login
