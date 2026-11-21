@@ -107,8 +107,8 @@ function Signup() {
           </p>
 
           <p>
-            Log in with your signup details to continue. Only the
-            admin account ({ADMIN_USERNAME}) can access the Dashboard.
+            Log in with your signup details to access your Dashboard.
+            Admin review tools are reserved for {ADMIN_USERNAME}.
           </p>
 
           <div className="details-note">
@@ -247,11 +247,7 @@ function Signup() {
           <Link to="/login">Login</Link>
         </p>
 
-        <p className="details-note">
-          Demo accounts are stored in this browser and can be
-          used to sign in on this device. Use username {ADMIN_USERNAME}
-          for admin access.
-        </p>
+  
       </div>
     </div>
   );

@@ -16,7 +16,8 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Contact from "./pages/Contact";
 import Users from "./pages/Users";
-import AdminApplications from "./pages/AdminApplications";
+// import AdminApplications from "./pages/AdminApplications";
+
 
 function App() {
   return (
@@ -53,7 +54,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
 
           <Route path="/users" element={<Users />} />
-
+{/* 
           <Route
             path="/admin"
             element={
@@ -61,12 +62,12 @@ function App() {
                 <AdminApplications />
               </ProtectedRoute>
             }
-          />
+          /> */}
 
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             }

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import countries from "../data/countries";
 import { getBookings } from "../services/consultations";
+import { isAdminUser } from "../services/api";
 
 function getStoredArray(key) {
   try {
@@ -46,6 +47,7 @@ function Dashboard() {
   const [showAll, setShowAll] = useState(false);
 
   const user = getUser();
+  const isAdmin = isAdminUser(user);
   const applications = getStoredArray("applications");
   const bookings = getStoredArray("bookings");
 
@@ -243,17 +245,19 @@ function Dashboard() {
             </span>
           </button>
 
-          <Link
-            to="/admin"
-            className="dashboard-action-card"
-          >
-            <ClipboardCheck size={27} color="#2563eb" />
-            <h3>Review Requests</h3>
-            <p>Review applications and consultation requests.</p>
-            <span>
-              Open Review Page <ArrowRight size={16} />
-            </span>
-          </Link>
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="dashboard-action-card"
+            >
+              <ClipboardCheck size={27} color="#2563eb" />
+              <h3>Review Requests</h3>
+              <p>Review applications and consultation requests.</p>
+              <span>
+                Open Review Page <ArrowRight size={16} />
+              </span>
+            </Link>
+          )}
         </div>
       </div>
 

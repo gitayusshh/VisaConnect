@@ -46,7 +46,7 @@ function Login() {
         `Welcome back, ${data.firstName || "User"}! Login successful.`
       );
 
-      navigate(data.role === "admin" ? "/dashboard" : "/");
+      navigate("/dashboard");
 
       // Refresh so the navbar displays the logged-in user.
       // The global toast container remains available after navigation.
@@ -59,7 +59,7 @@ function Login() {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="auth-page">
       <div className="auth-card">
@@ -135,15 +135,6 @@ function Login() {
           </button>
         </form>
 
-        <div className="demo-credentials">
-          <strong>Admin account</strong>
-
-          <p>Username: {ADMIN_USERNAME}</p>
-          <p>Password: the password chosen during signup</p>
-          <p>Admin account must be signed up in this browser first.</p>
-
-          
-        </div>
 
         <p className="auth-footer-text">
           Don't have an account?{" "}
